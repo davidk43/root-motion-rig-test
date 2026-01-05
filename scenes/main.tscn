@@ -1,0 +1,65 @@
+[gd_scene load_steps=11 format=3 uid="uid://3r824rophl53"]
+
+[ext_resource type="Texture2D" uid="uid://78pehu0r5g6w" path="res://assets/textures/grids/Dark/texture_04.png" id="1_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://ddjkebk56pmpl" path="res://scenes/girl.tscn" id="2_sugp2"]
+[ext_resource type="Script" uid="uid://bun4ouxrm0eva" path="res://scripts/character.gd" id="3_jyhfs"]
+[ext_resource type="Script" uid="uid://cspmf2ttf7e4x" path="res://scripts/camera-controller.gd" id="3_sugp2"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sugp2"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_jyhfs"]
+sky_material = SubResource("ProceduralSkyMaterial_sugp2")
+
+[sub_resource type="Environment" id="Environment_tbgi4"]
+background_mode = 2
+sky = SubResource("Sky_jyhfs")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tbgi4"]
+albedo_texture = ExtResource("1_jyhfs")
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_sugp2"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sugp2"]
+
+[node name="main" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tbgi4")
+
+[node name="world" type="Node3D" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="world"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="world/StaticBody3D"]
+transform = Transform3D(200, 0, 0, 0, 1, 0, 0, 0, 200, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_tbgi4")
+mesh = SubResource("BoxMesh_sugp2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="world/StaticBody3D"]
+transform = Transform3D(200, 0, 0, 0, 1, 0, 0, 0, 200, 0, 0, 0)
+shape = SubResource("BoxShape3D_sugp2")
+
+[node name="girl" parent="." groups=["character"] instance=ExtResource("2_sugp2")]
+script = ExtResource("3_jyhfs")
+
+[node name="camera" type="Node3D" parent="." groups=["camera"]]
+script = ExtResource("3_sugp2")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="camera"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1.5, 0)
+collision_mask = 4
+spring_length = 3.5
+
+[node name="Camera3D" type="Camera3D" parent="camera/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.0273724)
